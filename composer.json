@@ -33,7 +33,7 @@
         "symfony/twig-bundle": "7.1.*",
         "symfony/validator": "7.1.*",
         "symfony/yaml": "7.1.*",
-        "volodymyr/ticketing-common": "^0.0.1"
+        "volodymyr/ticketing-common": "0.*"
     },
     "config": {
         "allow-plugins": {
@@ -73,7 +73,12 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "lint": "./vendor/bin/phplint",
+        "cs-fix": "./vendor/bin/php-cs-fixer fix",
+        "cs-check": "./vendor/bin/php-cs-fixer check",
+        "test-unit": "./bin/phpunit --testsuite=unit",
+        "test-integration": "./bin/phpunit --testsuite=integration"
     },
     "conflict": {
         "symfony/symfony": "*"
@@ -84,16 +89,13 @@
             "require": "7.1.*"
         }
     },
-    "repositories": [{
-        "type": "path",
-        "url": "../common",
-        "options": {
-            "symclink": null
-        }
-    }],
     "require-dev": {
         "symfony/maker-bundle": "*",
         "symfony/stopwatch": "7.1.*",
-        "symfony/web-profiler-bundle": "7.1.*"
+        "symfony/web-profiler-bundle": "7.1.*",
+        "friendsofphp/php-cs-fixer": "*",
+        "overtrue/phplint": "^9.4",
+        "symfony/phpunit-bridge": "^7.1",
+        "fakerphp/faker": "^1.23"
     }
 }

@@ -30,5 +30,11 @@ class TicketRepository extends ServiceEntityRepository implements \App\Domain\Ti
     public function add(Ticket $ticket): void
     {
         $this->em->persist($ticket);
+        $this->em->flush();
+    }
+
+    public function save(Ticket $ticket): void
+    {
+        $this->em->flush();
     }
 }

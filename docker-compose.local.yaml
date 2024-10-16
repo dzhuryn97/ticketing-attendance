@@ -1,0 +1,43 @@
+version: '3.5'
+
+services:
+    attendance_php:
+        build:
+            context: ../attendance
+            dockerfile: ./docker/php/Dockerfile
+            target: dev
+        restart: unless-stopped
+        volumes:
+            - ./:/app
+            - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+            - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+        environment:
+            PHP_IDE_CONFIG: 'serverName=attendance_debug'
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+    attendance_nginx:
+        build:
+            context: ../attendance
+            dockerfile: ./docker/nginx/Dockerfile
+        restart: unless-stopped
+        environment:
+            PHP_FPM_URI: 'attendance_php:9000'
+        volumes:
+            - ./:/app
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d
+            - ./docker/nginx/templates:/etc/nginx/templates
+        depends_on:
+            - attendance_php
+    attendance_jobber:
+        build:
+            context: ../attendance
+            dockerfile: ./docker/jobber/Dockerfile
+        restart: unless-stopped
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./docker/jobber/supervisord.conf:/etc/supervisor/supervisord.conf:ro
+            - ./docker/jobber/conf.d/:/etc/supervisor/conf.d/:ro
+        depends_on:
+            - attendance_php
+        environment:
+            PROJECT_PREFIX: ${COMPOSE_PROJECT_NAME}

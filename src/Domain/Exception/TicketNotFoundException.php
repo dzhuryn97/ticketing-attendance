@@ -2,12 +2,13 @@
 
 namespace App\Domain\Exception;
 
-use Ticketing\Common\Domain\DomainEvent;
+use App\Domain\Ticket\Ticket;
+use Ticketing\Common\Domain\Exception\EntityNotFoundException;
 
-class TicketNotFoundException extends \DomainException
+class TicketNotFoundException extends EntityNotFoundException
 {
     public function __construct(string $code)
     {
-        parent::__construct(sprintf('Ticket with code %s not foun2d', $code));
+        parent::__construct($code, Ticket::class);
     }
 }
