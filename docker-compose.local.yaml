@@ -19,6 +19,9 @@ services:
         build:
             context: ../attendance
             dockerfile: ./docker/nginx/Dockerfile
+            target: build
+            args:
+                PHP_CONTAINER: 'blank'
         restart: unless-stopped
         environment:
             PHP_FPM_URI: 'attendance_php:9000'
