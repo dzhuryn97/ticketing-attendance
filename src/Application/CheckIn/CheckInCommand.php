@@ -10,7 +10,6 @@ class CheckInCommand implements CommandInterface
     public function __construct(
         public readonly UuidInterface $eventId,
         public readonly string $code,
-    )
-    {
+    ) {
     }
 }
