@@ -1,0 +1,42 @@
+name: Code Linting and Testing
+on:
+    workflow_call:
+        secrets:
+            DOCKER_USER:
+                required: true
+            DOCKER_PASSWORD:
+                required: true
+    pull_request:
+env:
+    TEST_TAG: dzhuryn/ticketing-attendance-php:test
+jobs:
+    test:
+        name: Code Linting and Testing
+        runs-on: ubuntu-24.04
+        steps:
+            -   uses: actions/checkout@v4
+            -   name: Setup build
+                uses: ./.github/actions/setup-build
+                with:
+                    docker-user: ${{ secrets.DOCKER_USER }}
+                    docker-password: ${{ secrets.DOCKER_PASSWORD }}
+            -   name: Build and export to Docker
+                uses: docker/build-push-action@v6
+                with:
+                    context: .
+                    file: docker/php/Dockerfile
+                    load: true
+                    tags: ${{ env.TEST_TAG }}
+                    target: dev
+            -   name: Check code style
+                run: |
+                    docker run --rm ${{ env.TEST_TAG }} composer run cs-check
+            -   name: Check code style
+                run: |
+                    docker run --rm ${{ env.TEST_TAG }} composer run cs-check
+            -   name: Lint
+                run: |
+                    docker run --rm ${{ env.TEST_TAG }} composer run lint
+            -   name: Unit tests
+                run: |
+                    docker run --rm ${{ env.TEST_TAG }} composer run test-unit

@@ -29,8 +29,7 @@ class Ticket extends DomainEntity
         UuidInterface $id,
         UuidInterface $eventId,
         string $code,
-    )
-    {
+    ) {
         $this->id = $id;
         $this->eventId = $eventId;
         $this->code = $code;
@@ -40,7 +39,7 @@ class Ticket extends DomainEntity
 
     public function checkIn(): void
     {
-        if($this->usedAt){
+        if ($this->usedAt) {
             throw new TicketAlreadyUsedException($this->code);
         }
         $this->usedAt = new \DateTimeImmutable();

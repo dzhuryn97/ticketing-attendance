@@ -1,0 +1,26 @@
+version: '3.5'
+
+services:
+    attendance_php:
+        image: dzhuryn/ticketing-attendance-php:${SERVICE_ATTENDANCE_VERSION}
+        restart: unless-stopped
+        environment:
+            DATABASE_URL: 'postgresql://${DB_USER}:${DB_PASSWORD}@database:5432/db_attendance?serverVersion=16&charset=utf8'
+            MESSENGER_DISTRIBUTED_TRANSPORT_DSN: 'amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672/%2f/messages'
+    attendance_nginx:
+        image: dzhuryn/ticketing-attendance-webserver:${SERVICE_ATTENDANCE_VERSION}
+        restart: unless-stopped
+        environment:
+            PHP_FPM_URI: 'attendance_php:9000'
+        depends_on:
+            - attendance_php
+
+    attendance_jobber:
+        image: dzhuryn/ticketing-attendance-jobber:${SERVICE_ATTENDANCE_VERSION}
+        restart: unless-stopped
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        depends_on:
+            - attendance_php
+        environment:
+            PROJECT_PREFIX: ${COMPOSE_PROJECT_NAME}

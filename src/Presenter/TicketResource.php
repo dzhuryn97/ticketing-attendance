@@ -17,6 +17,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
                     'ticket:check-in',
                 ],
             ],
+            security: 'is_granted("ROLE_TICKET_CHECKIN")',
             processor: TicketCheckInProcessor::class
         ),
     ]

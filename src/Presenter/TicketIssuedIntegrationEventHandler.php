@@ -10,9 +10,8 @@ use Ticketing\Common\IntegrationEvent\Ticket\TicketIssuedIntegrationEvent;
 class TicketIssuedIntegrationEventHandler implements IntegrationEventHandlerInterface
 {
     public function __construct(
-        private readonly CommandBusInterface $commandBus
-    )
-    {
+        private readonly CommandBusInterface $commandBus,
+    ) {
     }
 
     public function __invoke(TicketIssuedIntegrationEvent $event)
